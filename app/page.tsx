@@ -5,7 +5,7 @@ import { CldImage } from "next-cloudinary";
 export default function Page() {
   return (
     <section>
-      <div className="flex flex-col md:flex-row gap-8 items-start">
+      <div className="flex flex-col md:flex-row gap-8 mt-16 items-start">
         {/* LEFT: Photo (1 part) */}
         <div className="flex-[1] max-w-sm">
           <CldImage

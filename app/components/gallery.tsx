@@ -2,27 +2,14 @@
 import cloudinary from "@/lib/cloudinary";
 import { CldImage } from "next-cloudinary";
 import Image from "next/image";
+import ImageCarousel from "./imagecarousel";
 
 export default async function GalleryImages() {
   const { images, nextCursor } = await getImages();
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      {images.map((image) => (
-        <div key={image.id}>
-          <a href={image.link} rel="noreferrer">
-            <div>
-              <Image
-                width={image.width}
-                height={image.height}
-                src={image.image}
-                alt=""
-              />
-            </div>
-            <h3>{image.title}</h3>
-          </a>
-        </div>
-      ))}
+    <div className="max-w-6xl mx-auto mt-4">
+      <ImageCarousel images={images} />
     </div>
   );
 }
@@ -36,7 +23,6 @@ async function getImages() {
       },
     },
   ).then((r) => r.json());
-  console.log("results", results);
   const { resources, next_cursor: nextCursor } = results;
 
   const collator = new Intl.Collator(undefined, {
@@ -58,16 +44,5 @@ async function getImages() {
         height,
       };
     });
-
-  // const images = resources.map((resource) => {
-  //   const { width, height } = resource;
-  //   return {
-  //     id: resource.asset_id,
-  //     title: resource.display_name,
-  //     image: resource.secure_url,
-  //     width,
-  //     height,
-  //   };
-  // });
   return { images, nextCursor };
 }
