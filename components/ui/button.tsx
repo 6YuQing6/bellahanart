@@ -51,6 +51,7 @@ function Button(
     },
   ref,
 ) {
+  //https://github.com/shadcn-ui/ui/issues/5512
   const Comp = asChild ? Slot.Root : "button";
 
   return (
