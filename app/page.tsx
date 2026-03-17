@@ -1,5 +1,4 @@
 "use client";
-import { BlogPosts } from "app/components/posts";
 import { CldImage } from "next-cloudinary";
 
 export default function Page() {

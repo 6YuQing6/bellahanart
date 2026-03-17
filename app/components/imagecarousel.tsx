@@ -45,13 +45,13 @@ export default function ImageCarousel({ images }) {
         <CarouselContent>
           {images.map((image) => (
             <CarouselItem key={image.id} className="basis-full">
-              <div className="p-4">
+              <div>
                 <div className="relative w-full aspect-square">
                   <Image
                     src={image.image}
                     alt={image.title}
                     fill
-                    className="object-contain rounded-lg"
+                    className="object-contain"
                     sizes="(max-width: 768px) 100vw, 800px"
                   />
                 </div>
@@ -67,8 +67,8 @@ export default function ImageCarousel({ images }) {
         <CarouselNext className="right-2" />
       </Carousel>
 
-      <div className="text-muted-foreground py-4 text-center text-sm">
-        Slide {current} of {count}
+      <div className="text-muted-foreground text-center text-sm">
+        {current} / {count}
       </div>
     </div>
   );
