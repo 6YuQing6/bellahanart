@@ -61,7 +61,13 @@ export function PolaroidCard({
         <h6 className="text-sm font-medium text-[#333] opacity-70">
           ${(price / 100).toLocaleString()}
         </h6>
-        <AddToCartButton id={id} />
+        <AddToCartButton
+          id={id}
+          name={name}
+          price={0}
+          imageUrl={imageUrl}
+          href={href}
+        />
       </div>
 
       {/* Name + Description */}

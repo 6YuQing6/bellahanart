@@ -9,7 +9,7 @@ import {
   CarouselNext,
   CarouselPrevious,
   type CarouselApi,
-} from "@/components/ui/carousel";
+} from "@/app/components/carousel";
 import Autoplay from "embla-carousel-autoplay";
 
 export default function ImageCarousel({ images }) {

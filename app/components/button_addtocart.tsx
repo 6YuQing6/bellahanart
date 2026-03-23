@@ -1,12 +1,24 @@
 "use client";
+import { useRef } from "react";
 
-export default function AddToCartButton({ id }: { id: string }) {
+type CartItem = {
+  id: string;
+  name: string;
+  price: number;
+  imageUrl: string;
+  href: string;
+};
+
+export default function AddToCartButton(item: CartItem) {
   function handleAddToCart() {
-    const cart = JSON.parse(localStorage.getItem("cart") ?? "[]");
-    cart.push(id);
-    localStorage.setItem("cart", JSON.stringify(cart));
-    window.dispatchEvent(new Event("cart-updated"));
+    const cart: CartItem[] = JSON.parse(localStorage.getItem("cart") ?? "[]");
+    if (!cart.some((i) => i.id === item.id)) {
+      cart.push(item);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      window.dispatchEvent(new Event("cart-updated"));
+    }
   }
+
   return (
     <button
       onClick={handleAddToCart}
@@ -28,7 +40,7 @@ export default function AddToCartButton({ id }: { id: string }) {
 
       {/* Filled — hidden by default, visible on hover */}
       <svg
-        className="hidden group-hover:block"
+        className="hidden group-hover:block transition duration-150 ease-in-out active:scale-60"
         width="22"
         height="28"
         viewBox="0 0 22 28"
@@ -40,6 +52,12 @@ export default function AddToCartButton({ id }: { id: string }) {
         />
         <rect x="1" y="7" width="20" height="20" rx="2" fill="#1E1E1E" />
       </svg>
+      {/*       
+      {count > 0 && (
+        <span className="absolute -top-1 -right-2 min-w-[16px] h-4 px-0.5 bg-[#1E1E1E] text-white text-[10px] font-medium leading-4 text-center rounded-full">
+          {count > 99 ? "99+" : count}
+        </span>
+      )} */}
     </button>
   );
 }

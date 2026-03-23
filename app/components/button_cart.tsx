@@ -13,7 +13,7 @@ export default function CartIcon() {
       title="View Cart"
       rel="nofollow"
       className="inline-flex items-center relative">
-      <div className="relative">
+      <div id="cart-icon" className="relative">
         <svg
           width="21"
           height="24"

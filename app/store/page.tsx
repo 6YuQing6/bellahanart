@@ -22,7 +22,7 @@ export default async function Page({
               key={image.id}
               id={image.id}
               name={image.title}
-              price={0}
+              price={image.price}
               href={image.image}
               description={image.description}
               imageUrl={image.image}
@@ -37,9 +37,10 @@ export default async function Page({
   );
 }
 
+// https://youtu.be/XJWdLbw3QjY?si=ErnV2oDDf1aiw5ZB
 async function getImages(page: number) {
   const results = await fetch(
-    `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/resources/by_asset_folder?asset_folder=gallery&max_results=500`,
+    `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/resources/by_asset_folder?asset_folder=store&max_results=500`,
     {
       headers: {
         Authorization: `Basic ${Buffer.from(
@@ -70,6 +71,7 @@ async function getImages(page: number) {
       image: resource.secure_url,
       width: resource.width,
       height: resource.height,
+      price: Number(resource.context?.custom?.price) ?? 0,
     }));
 
   const start = (page - 1) * PAGE_SIZE;
