@@ -6,9 +6,9 @@ export function PolaroidGrid({ children }) {
         w-full
         grid
         grid-cols-1
-        sm:grid-cols-3
-        gap-x-6
-        gap-y-6
+        sm:grid-cols-2
+        gap-x-12
+        gap-y-12
         justify-between
         m-0 p-0
         border-0
@@ -22,73 +22,68 @@ export function PolaroidGrid({ children }) {
   );
 }
 
+import Link from "next/link";
 import AddToCartButton from "./button_addtocart";
+import { ImageItem } from "./types/image";
 
 // PolaroidCard.jsx
-export function PolaroidCard({
-  id,
-  name,
-  price,
-  href,
-  description,
-  imageUrl,
-  imageWidth,
-  imageHeight,
-}) {
-  const paddingTop = `calc(${((imageHeight / imageWidth) * 100).toFixed(3)}% + 8px)`;
+export function PolaroidCard(item: ImageItem) {
+  const paddingTop = `calc(${((item.imageHeight / item.imageWidth) * 100).toFixed(3)}% + 8px)`;
 
   return (
     <figure className="m-0 p-0 border-0 box-border">
-      <a
+      <Link
         tabIndex={0}
-        href={href}
-        aria-label={name}
-        title={`${name} Painting`}
-        target="_blank"
+        href={item.href}
+        aria-label={item.name}
+        title={`${item.name} Painting`}
         className="relative block w-full overflow-hidden"
         style={{ paddingTop }}>
         <img
-          src={imageUrl}
-          alt={description}
-          width={imageWidth}
-          height={imageHeight}
-          className="absolute inset-0 w-full h-full object-cover"
+          src={item.imageUrl}
+          alt={item.description}
+          width={item.imageWidth}
+          height={item.imageHeight}
+          className="absolute inset-0 w-full h-full object-cover transform transition-transform duration-500 hover:scale-110"
         />
-      </a>
+      </Link>
 
       {/* Price + Cart */}
-      <div className="flex items-center justify-between mt-2">
-        <h6 className="text-sm font-medium text-[#333] opacity-70">
-          ${(price / 100).toLocaleString()}
+      <div className="flex items-center justify-between mt-1">
+        <h6 className="text-md font-small text-[#333] opacity-70">
+          ${item.price.toLocaleString()}
         </h6>
         <AddToCartButton
-          id={id}
-          name={name}
-          price={0}
-          imageUrl={imageUrl}
-          href={href}
+          id={item.id}
+          name={item.name}
+          price={item.price}
+          imageUrl={item.imageUrl}
+          href={item.href}
         />
       </div>
 
       {/* Name + Description */}
-      <div className="mt-1">
-        <h6 className="text-sm font-medium text-[#333] leading-snug">
-          <a
+      <div className="mt-0.5">
+        <h6 className="text-lg font-medium text-[#333] leading-snug">
+          <Link
             tabIndex={0}
-            href={href}
-            aria-label={`View ${name} Painting`}
-            title={`View ${name} Painting`}
+            href={item.href}
+            aria-label={`View ${item.name} Painting`}
+            title={`View ${item.name} Painting`}
             rel="nofollow"
-            target="_blank"
             className="hover:underline">
-            {name}
-          </a>
+            {item.name}
+          </Link>
         </h6>
-        {description && (
-          <p className="text-xs text-[#333] opacity-70 mt-0.5 leading-snug">
-            {description}
+        {item.description && (
+          <p className="text-xs text-[#333] opacity-70 mt-1 leading-snug">
+            {item.description}
           </p>
         )}
+        <p className="text-xs text-[#333] opacity-50 mt-0.5 leading-snug">
+          {item.dimensions_width} × {item.dimensions_height} in ·{" "}
+          {item.year_created}
+        </p>
       </div>
     </figure>
   );

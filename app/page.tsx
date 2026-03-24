@@ -4,7 +4,7 @@ import { CldImage } from "next-cloudinary";
 export default function Page() {
   return (
     <section>
-      <div className="flex flex-col md:flex-row gap-8 mt-16 items-start">
+      <div className="flex flex-col md:flex-row gap-8 mt-12 items-start">
         {/* LEFT: Photo (1 part) */}
         <div className="flex-[1] max-w-sm">
           <CldImage
@@ -12,7 +12,7 @@ export default function Page() {
             alt="profile-photo"
             width="800"
             height="800"
-            className="rounded-lg w-full h-auto"
+            className="rounded-sm w-full h-auto"
             crop={{
               type: "auto",
               source: true,

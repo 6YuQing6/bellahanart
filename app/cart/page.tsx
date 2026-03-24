@@ -69,8 +69,10 @@ export default function CartPage() {
         <>
           <ul className="flex flex-col divide-y divide-neutral-200">
             {items.map((item) => (
-              <li key={item.id} className="flex items-center gap-4 py-4">
-                <Link href={item.href} target="_blank" className="shrink-0">
+              <li
+                key={item.id}
+                className="flex items-center gap-4 py-4 min-w-xs">
+                <Link href={item.href} className="shrink-0">
                   <img
                     src={item.imageUrl}
                     alt={item.name}
@@ -80,16 +82,15 @@ export default function CartPage() {
                   />
                 </Link>
 
-                <div className="flex-1 min-w-0">
+                <div className="flex-1">
                   <Link
                     href={item.href}
-                    target="_blank"
                     className="text-sm font-medium text-[#333] hover:underline underline-offset-4 line-clamp-1">
                     {item.name}
                   </Link>
                   {item.price > 0 && (
                     <p className="text-sm text-[#333] opacity-60 mt-0.5">
-                      ${(item.price / 100).toLocaleString()}
+                      ${item.price.toLocaleString()}
                     </p>
                   )}
                 </div>
@@ -97,7 +98,7 @@ export default function CartPage() {
                 <button
                   onClick={() => removeItem(item.id)}
                   title="Remove item"
-                  className="text-xs text-[#333] opacity-40 hover:opacity-100 transition-opacity shrink-0">
+                  className="text-xs text-[#333] opacity-40 hover:opacity-100 transition-opacity shrink-0 cursor-pointer">
                   Remove
                 </button>
               </li>
@@ -107,13 +108,13 @@ export default function CartPage() {
           <div className="flex items-center justify-between pt-6 border-t border-neutral-200 mt-2">
             <button
               onClick={clearCart}
-              className="text-xs text-[#333] opacity-40 hover:opacity-100 transition-opacity">
+              className="text-xs text-[#333] opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
               Clear cart
             </button>
 
             {total > 0 && (
               <p className="text-sm font-medium text-[#333]">
-                Total: ${(total / 100).toLocaleString()}
+                Total: ${total.toLocaleString()}
               </p>
             )}
           </div>

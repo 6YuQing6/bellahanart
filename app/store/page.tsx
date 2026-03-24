@@ -1,5 +1,6 @@
 import { PolaroidGrid, PolaroidCard } from "../components/polaroid";
 import PaginationControls from "../components/paginationcontrols";
+import { ImageItem } from "../components/types/image";
 
 const PAGE_SIZE = 30;
 
@@ -15,20 +16,13 @@ export default async function Page({
 
   return (
     <section>
-      <div className="max-w-6xl mx-auto mt-4 px-4">
+      <div className="max-w-6xl mx-auto mt-6 px-4">
+        <h1 className="text-lg font-semibold text-[#333] mb-6">
+          Original Works ({total})
+        </h1>
         <PolaroidGrid>
-          {images.map((image) => (
-            <PolaroidCard
-              key={image.id}
-              id={image.id}
-              name={image.title}
-              price={image.price}
-              href={image.image}
-              description={image.description}
-              imageUrl={image.image}
-              imageWidth={image.width}
-              imageHeight={image.height}
-            />
+          {images.map((image: ImageItem) => (
+            <PolaroidCard key={image.id} {...image} />
           ))}
         </PolaroidGrid>
         <PaginationControls page={page} totalPages={totalPages} />
@@ -40,7 +34,7 @@ export default async function Page({
 // https://youtu.be/XJWdLbw3QjY?si=ErnV2oDDf1aiw5ZB
 async function getImages(page: number) {
   const results = await fetch(
-    `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/resources/by_asset_folder?asset_folder=store&max_results=500`,
+    `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/resources/by_asset_folder?asset_folder=store&max_results=500&context=true`,
     {
       headers: {
         Authorization: `Basic ${Buffer.from(
@@ -59,20 +53,29 @@ async function getImages(page: number) {
     numeric: true,
     sensitivity: "base",
   });
+  console.log(resources[0]);
 
   const sorted = resources
-    .sort((a, b) =>
-      collator.compare(a.display_name ?? "", b.display_name ?? ""),
-    )
-    .map((resource) => ({
-      id: resource.asset_id,
-      title: resource.display_name ?? "Untitled",
-      description: resource.context?.custom?.description ?? null,
-      image: resource.secure_url,
-      width: resource.width,
-      height: resource.height,
-      price: Number(resource.context?.custom?.price) ?? 0,
-    }));
+    .filter((i) => {
+      return i.metadata?.public == "true";
+    })
+    .map(
+      (resource): ImageItem => ({
+        id: resource.asset_id,
+        name: resource.context?.custom?.caption ?? "Untitled",
+        description:
+          resource.context?.custom?.alt ?? "Chinese Paint & Ink On Rice Paper",
+        imageUrl: resource.secure_url,
+        imageWidth: resource.width,
+        imageHeight: resource.height,
+        price: Number(resource.context?.custom?.price) ?? 0,
+        href: `/store/${resource.asset_id}`,
+        cn_title: resource.context?.custom?.cn_title ?? "无题",
+        dimensions_height: resource.context?.custom?.dimensions_height ?? 0,
+        dimensions_width: resource.context?.custom?.dimensions_width ?? 0,
+        year_created: resource.context?.custom?.year_created ?? 2025,
+      }),
+    );
 
   const start = (page - 1) * PAGE_SIZE;
   const images = sorted.slice(start, start + PAGE_SIZE);
