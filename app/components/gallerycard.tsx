@@ -17,7 +17,7 @@ export default function GalleryCard({
 
   return (
     <div
-      className="group relative flex-shrink-0 overflow-hidden rounded-xl bg-neutral-100 flex-none"
+      className="group relative flex-shrink-0 overflow-hidden bg-neutral-100 flex-none"
       style={{ width: cardWidth, height: "100%" }}>
       {/* image */}
       <img

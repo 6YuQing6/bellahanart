@@ -72,7 +72,6 @@ async function getImage(id: string): Promise<ImageItem | null> {
   ).then((r) => r.json());
 
   if (!result) return null;
-  console.log(result);
 
   return {
     id: result.asset_id,

@@ -20,9 +20,7 @@ export default function CartPage() {
     function readCart() {
       try {
         const cart = JSON.parse(localStorage.getItem("cart") ?? "[]");
-        console.log(cart);
         setItems(Array.isArray(cart) ? cart : []);
-        console.log(items);
       } catch {
         setItems([]);
       }

@@ -2,15 +2,15 @@ import GalleryCard from "../components/gallerycard";
 import HorizontalScrollContainer from "../components/horizontalscroll_container";
 import { ImageItem } from "../components/types/image";
 
+// inspiration: https://www.vangoghmuseum.nl/en?_gl=1*1e4klig*_up*MQ..*_gs*MQ..&gclid=CjwKCAjwyYPOBhBxEiwAgpT8P4OK1lTmhrUBUEjxFou7QFxVWH0GXN3MB7ogPrV25BIKRxNIW5G7cxoCeagQAvD_BwE&gbraid=0AAAAADhviGWPYVS1qDxZdmTRhakt5A2vd
 export default async function Page() {
   const { images } = await getImages();
-
   return (
     <section>
       <div className="max-w-6xl mx-auto mt-4">
         <HorizontalScrollContainer gap="gap-6" padding="px-2" fadeEdges>
           {images.map((img: ImageItem) => (
-            <GalleryCard key={img.id} image={img} />
+            <GalleryCard key={img.id} image={img} cardHeight={500} />
           ))}
         </HorizontalScrollContainer>
       </div>

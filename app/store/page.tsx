@@ -53,7 +53,6 @@ async function getImages(page: number) {
     numeric: true,
     sensitivity: "base",
   });
-  console.log(resources[0]);
 
   const sorted = resources
     .filter((i) => {
