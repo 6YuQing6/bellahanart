@@ -52,7 +52,7 @@ export default function CartPage() {
 
   return (
     <section className="max-w-2xl mx-auto px-4 mt-8">
-      <h1 className="text-lg font-semibold text-[#333] mb-6">
+      <h1 className="text-lg font-semibold text-[#333] mb-6 text-center">
         Your Cart {items.length > 0 && `(${items.length})`}
       </h1>
 

@@ -1,4 +1,6 @@
-import ImageCarousel from "../components/imagecarousel";
+import GalleryCard from "../components/gallerycard";
+import HorizontalScrollContainer from "../components/horizontalscroll_container";
+import { ImageItem } from "../components/types/image";
 
 export default async function Page() {
   const { images } = await getImages();
@@ -6,7 +8,11 @@ export default async function Page() {
   return (
     <section>
       <div className="max-w-6xl mx-auto mt-4">
-        <ImageCarousel images={images} />
+        <HorizontalScrollContainer gap="gap-6" padding="px-2" fadeEdges>
+          {images.map((img: ImageItem) => (
+            <GalleryCard key={img.id} image={img} />
+          ))}
+        </HorizontalScrollContainer>
       </div>
     </section>
   );
@@ -33,16 +39,25 @@ async function getImages() {
   });
 
   const images = results.resources
-    .sort((a, b) =>
+    .sort((a: any, b: any) =>
       collator.compare(a.display_name ?? "", b.display_name ?? ""),
     )
-    .map((resource) => ({
-      id: resource.asset_id,
-      title: resource.display_name,
-      image: resource.secure_url,
-      width: resource.width,
-      height: resource.height,
-    }));
+    .map(
+      (resource: any): ImageItem => ({
+        id: resource.asset_id,
+        name: resource.display_name,
+        price: resource.price,
+        href: resource.secure_url,
+        description: resource.context?.custom?.description ?? "",
+        imageUrl: resource.secure_url,
+        imageWidth: resource.width,
+        imageHeight: resource.height,
+        cn_title: resource.display_name,
+        dimensions_height: resource.height,
+        dimensions_width: resource.width,
+        year_created: resource.context?.custom?.year_created ?? 0,
+      }),
+    );
 
   return { images };
 }
