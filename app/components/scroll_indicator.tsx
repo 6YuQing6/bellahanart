@@ -21,30 +21,45 @@ export default function ScrollIndicator({
   className = "",
 }: ScrollIndicatorProps) {
   const [internalProgress, setInternalProgress] = useState(value ?? 0);
-  const [isAnimating, setIsAnimating] = useState<"left" | "right" | null>(null);
 
   const progress = internalProgress;
+  // #2: Add this ref at the top of the component, near your other refs
+  const rafRef = useRef<number | null>(null);
+  const onChangeRef = useRef(onChange);
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
-  /* ── auto-track scroll container ───────────────────────────── */
+  // ↓ your existing scroll effect — modified:
   useEffect(() => {
     const el = scrollContainerRef?.current;
     if (!el) return;
+
     const onScroll = () => {
-      const max = el.scrollWidth - el.clientWidth;
-      if (max <= 0) return;
-      const p = el.scrollLeft / max;
-      setInternalProgress(p);
-      onChange?.(p);
+      // #1: bail if a frame is already queued
+      if (rafRef.current) return;
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = null;
+        const max = el.scrollWidth - el.clientWidth;
+        if (max <= 0) return;
+        const p = el.scrollLeft / max;
+        setInternalProgress(p);
+        // #2: call via ref instead of directly
+        onChangeRef.current?.(p);
+      });
     };
+
     el.addEventListener("scroll", onScroll, { passive: true });
-    return () => el.removeEventListener("scroll", onScroll);
-  }, [scrollContainerRef, onChange]);
+    return () => {
+      el.removeEventListener("scroll", onScroll);
+      // #1: cancel any pending frame on cleanup
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+    // #2: onChange is no longer in the dep array — the ref handles it
+  }, [scrollContainerRef]);
 
   /* ── button handlers ────────────────────────────────────────── */
   const nudge = (dir: "left" | "right") => {
-    setIsAnimating(dir);
-    setTimeout(() => setIsAnimating(null), 320);
-
     const next = Math.min(
       1,
       Math.max(0, progress + (dir === "right" ? step : -step)),
@@ -60,27 +75,12 @@ export default function ScrollIndicator({
     }
   };
 
-  const pct = `${(progress * 100).toFixed(2)}%`;
-
   return (
     <div className={`flex items-center h-8 gap-2 px-3 ${className}`}>
-      {/* hint label */}
-      <span
-        aria-live="polite"
-        className={`
-    mr-1 select-none whitespace-nowrap text-[10px] tracking-widest uppercase
-    text-[var(--si-fg,#64748b)]
-    transition-all duration-500 ease-out
-    ${progress < 0.2 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2 pointer-events-none"}
-  `}>
-        Scroll for more
-      </span>
-
       {/* left button */}
       <ArrowButton
         dir="left"
         disabled={progress <= 0}
-        active={isAnimating === "left"}
         onClick={() => nudge("left")}
       />
 
@@ -91,22 +91,17 @@ export default function ScrollIndicator({
           aria-valuenow={Math.round(progress * 100)}
           aria-valuemin={0}
           aria-valuemax={100}
-          style={{ width: pct }}
-          className="absolute inset-y-0 left-0 rounded-full bg-[var(--si-fill,#0ea5e9)] transition-[width] duration-300 ease-out"
+          style={{ transform: `scaleX(${progress})`, willChange: "transform" }}
+          className="absolute inset-y-0 left-0 right-0 rounded-full origin-left
+               bg-[var(--si-fill,rgba(155,74,71,0.9))]
+               transition-transform duration-300 ease-out" // ← was: transition-[width]
         />
-        {/* subtle shimmer */}
-        <div
-          style={{ width: pct }}
-          className="absolute inset-y-0 left-0 rounded-full overflow-hidden">
-          <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full" />
-        </div>
       </div>
 
       {/* right button */}
       <ArrowButton
         dir="right"
         disabled={progress >= 1}
-        active={isAnimating === "right"}
         onClick={() => nudge("right")}
       />
     </div>
@@ -117,11 +112,10 @@ export default function ScrollIndicator({
 interface ArrowButtonProps {
   dir: "left" | "right";
   disabled: boolean;
-  active: boolean;
   onClick: () => void;
 }
 
-function ArrowButton({ dir, disabled, active, onClick }: ArrowButtonProps) {
+function ArrowButton({ dir, disabled, onClick }: ArrowButtonProps) {
   return (
     <button
       type="button"
@@ -129,18 +123,13 @@ function ArrowButton({ dir, disabled, active, onClick }: ArrowButtonProps) {
       disabled={disabled}
       aria-label={dir === "left" ? "Scroll left" : "Scroll right"}
       className={`
-        group relative flex h-7 w-7 items-center justify-center rounded-full
-        border border-[var(--si-border,rgba(100,116,139,0.22))]
+        group relative flex h-7 w-7 items-center justify-center rounded-full cursor-pointer
         bg-[var(--si-btn-bg,rgba(255,255,255,0.06))]
         text-[var(--si-fg,#64748b)]
         backdrop-blur-sm
         transition-all duration-200
-        hover:border-[var(--si-fill,#0ea5e9)] hover:text-[var(--si-fill,#0ea5e9)]
-        hover:bg-[var(--si-btn-hover,rgba(14,165,233,0.08))]
+        hover:border-[var(--si-fill,#000000)] hover:text-[var(--si-fill,#000000)]
         disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:border-[var(--si-border,rgba(100,116,139,0.22))]
-        disabled:hover:text-[var(--si-fg,#64748b)] disabled:hover:bg-transparent
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--si-fill,#0ea5e9)]
-        ${active ? "translate-y-[1px]" : "translate-y-0"} transform-gpu
       `}>
       <svg
         viewBox="0 0 16 16"

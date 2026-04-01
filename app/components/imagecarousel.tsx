@@ -11,8 +11,9 @@ import {
   type CarouselApi,
 } from "@/app/components/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import { ImageItem } from "./types/image";
 
-export default function ImageCarousel({ images }) {
+export default function ImageCarousel({ images }: { images: ImageItem[] }) {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
@@ -48,15 +49,15 @@ export default function ImageCarousel({ images }) {
               <div>
                 <div className="relative w-full aspect-square">
                   <Image
-                    src={image.image}
-                    alt={image.title}
+                    src={image.imageUrl}
+                    alt={image.name}
                     fill
                     className="object-contain"
                     sizes="(max-width: 768px) 100vw, 800px"
                   />
                 </div>
                 <h3 className="mt-4 text-center text-lg font-medium">
-                  {image.title}
+                  {image.name}
                 </h3>
               </div>
             </CarouselItem>

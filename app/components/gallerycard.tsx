@@ -1,6 +1,7 @@
 "use client";
 
 import { ImageItem } from "./types/image";
+import Image from "next/image";
 
 interface GalleryCardProps {
   image: ImageItem;
@@ -19,14 +20,17 @@ export default function GalleryCard({
     <div
       className="group relative flex-shrink-0 overflow-hidden bg-neutral-100 flex-none"
       style={{ width: cardWidth, height: "100%" }}>
-      {/* image */}
-      <img
-        src={image.imageUrl}
-        alt={image.name}
-        width={image.imageWidth}
-        height={image.imageHeight}
-        className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-      />
+      <div
+        className="group relative flex-shrink-0 overflow-hidden bg-neutral-100 flex-none"
+        style={{ width: cardWidth, height: cardHeight }}>
+        <Image
+          src={image.imageUrl}
+          alt={image.name}
+          width={cardWidth}
+          height={cardHeight}
+          className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+        />
+      </div>
 
       {/* overlay */}
       <div
