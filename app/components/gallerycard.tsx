@@ -33,17 +33,18 @@ export default function GalleryCard({
       </div>
 
       {/* overlay */}
+      {/* overlay — bottom 30% only */}
       <div
         className="
-          absolute inset-0 flex flex-col justify-center
-          bg-white/65
-          opacity-0 transition-opacity duration-300 ease-out
-          group-hover:opacity-100
-          backdrop-blur-[1px]
-          text-center
-        ">
-        <div className="p-3">
-          <p className="text-md font-bold leading-tight text-neutral-900">
+        absolute bottom-0 left-0 right-0 h-[35%]
+        flex flex-col items-center justify-end
+        bg-gradient-to-t from-white/80 to-transparent
+        opacity-0 transition-opacity duration-300 ease-out
+        group-hover:opacity-100
+        text-center
+      ">
+        <div className="p-3 mb-4">
+          <p className="text-md font-bold leading-tight text-neutral-900 drop-shadow-[0_2px_5px_rgba(255,255,255,1)]">
             {image.name}
           </p>
           {image.price !== undefined && (
