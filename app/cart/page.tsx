@@ -50,7 +50,7 @@ export default function CartPage() {
 
   return (
     <section className="max-w-2xl mx-auto px-4 mt-8">
-      <h1 className="text-lg font-semibold text-[#333] mb-6 text-center">
+      <h1 className="text-xl font-bold text-[#333] mb-6 text-center">
         Your Cart {items.length > 0 && `(${items.length})`}
       </h1>
 
@@ -111,11 +111,27 @@ export default function CartPage() {
             </button>
 
             {total > 0 && (
-              <p className="text-sm font-medium text-[#333]">
-                Total: ${total.toLocaleString()}
-              </p>
+              <div>
+                <p className="text-md font-medium text-[#333] text-right">
+                  Subtotal: ${total.toLocaleString()}
+                </p>
+                <p className="text-sm font-light text-[#333] opacity-40">
+                  Taxes and shippping calculated at checkout
+                </p>
+              </div>
             )}
           </div>
+
+          {/* https://www.durunaru.com/ */}
+          <div className="mt-2 pt-5">
+            <Link
+              href="/payment"
+              className="inline-block w-full text-center px-5 py-[10px] bg-black text-white border border-black text-base font-medium leading-[23px] tracking-normal rounded-[5px] whitespace-normal outline-none transition-all duration-[250ms] select-none antialiased cursor-pointer hover:shadow-[0_0_0_0.1rem_rgb(0,0,0)]">
+              Check Out
+            </Link>
+          </div>
+
+          <div className="mb-16" />
         </>
       )}
     </section>
