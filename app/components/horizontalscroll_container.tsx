@@ -39,6 +39,44 @@ export default function HorizontalScrollContainer({
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    let rafId: number;
+    let paused = false;
+    const speed = 2;
+
+    const tick = () => {
+      if (!paused) {
+        const max = el.scrollWidth - el.clientWidth;
+        if (el.scrollLeft >= max) {
+          el.scrollLeft = 0;
+        } else {
+          el.scrollLeft += speed;
+        }
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+
+    const pause = () => {
+      paused = true;
+    };
+    const resume = () => {
+      paused = false;
+    };
+
+    el.addEventListener("mouseenter", pause);
+    el.addEventListener("mouseleave", resume);
+
+    rafId = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(rafId);
+      el.removeEventListener("mouseenter", pause);
+      el.removeEventListener("mouseleave", resume);
+    };
+  }, []);
+
   const updateState = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
